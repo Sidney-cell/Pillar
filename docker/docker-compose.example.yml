@@ -1,0 +1,15 @@
+version: "3.9"
+
+services: api: image: pillar/api:latest container_name: pillar-api restart: unless-stopped ports: - "3000:3000" # Exemplo: em produção use reverse proxy environment: - NODE_ENV=production - API_PORT=3000 - POSTGRES_HOST=postgres - POSTGRES_PORT=5432 - POSTGRES_DB=pillar - POSTGRES_USER=pillar - POSTGRES_PASSWORD=CHANGE_ME - API_KEY_SECRET=CHANGE_ME - HMAC_SECRET=CHANGE_ME depends_on: - postgres
+
+postgres: image: postgres:15 container_name: pillar-postgres restart: unless-stopped environment: - POSTGRES_DB=pillar - POSTGRES_USER=pillar - POSTGRES_PASSWORD=CHANGE_ME volumes: - pillar_pg_data:/var/lib/postgresql/data
+
+volumes: pillar_pg_data:
+
+⚠️ Este arquivo é APENAS UM EXEMPLO
+
+❌ Não usar em produção
+
+❌ Não commitar segredos reais
+
+✅ Use apenas para onboarding e demonstração
