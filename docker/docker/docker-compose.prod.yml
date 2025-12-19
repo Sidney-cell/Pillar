@@ -1,0 +1,17 @@
+version: "3.9"
+
+services: pillar-ingestor: image: pillar/ingestor:latest container_name: pillar-ingestor restart: unless-stopped env_file: - .env depends_on: - pillar-db networks: - pillar-net
+
+pillar-processor: image: pillar/processor:latest container_name: pillar-processor restart: unless-stopped env_file: - .env depends_on: - pillar-db networks: - pillar-net
+
+pillar-dispatcher: image: pillar/dispatcher:latest container_name: pillar-dispatcher restart: unless-stopped env_file: - .env depends_on: - pillar-db networks: - pillar-net
+
+pillar-api: image: pillar/api:latest container_name: pillar-api restart: unless-stopped env_file: - .env ports: - "127.0.0.1:8080:8080" depends_on: - pillar-db networks: - pillar-net
+
+pillar-db: image: postgres:16 container_name: pillar-db restart: unless-stopped environment: POSTGRES_DB: pillar POSTGRES_USER: pillar POSTGRES_PASSWORD: ${POSTGRES_PASSWORD} volumes: - pillar-db-data:/var/lib/postgresql/data networks: - pillar-net
+
+pillar-metrics: image: prom/prometheus:latest container_name: pillar-metrics restart: unless-stopped volumes: - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro ports: - "127.0.0.1:9090:9090" networks: - pillar-net
+
+networks: pillar-net: driver: bridge
+
+volumes: pillar-db-data:
